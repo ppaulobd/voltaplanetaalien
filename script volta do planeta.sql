@@ -5,22 +5,36 @@ CREATE TABLE bloom(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(45)
 );
+select*from bloom;
+ALTER TABLE bloom CHANGE nome nomes VARCHAR(45);
 
-SELECT*FROM bloom;
+-- INNER JOIN PARA TRAZER TODOS OS IDS E NOMES E VERBOS -- 
+
+SELECT bloom.id AS id_bloom, bloom.nomes AS nomes_bloom, verbo.id AS id_verbo, verbo.nomeVerbo
+FROM bloom
+INNER JOIN verbo ON bloom.id = verbo.fk_bloom_id;
+
+--  INNER JOIN PARA TRAZER APENAS NOMES E VERBOS --
+SELECT bloom.nomes, verbo.nomeVerbo
+FROM bloom
+INNER JOIN verbo ON bloom.id = verbo.fk_bloom_id;
 
 CREATE TABLE verbo(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     nomeVerbo VARCHAR(45),
     fk_bloom_id INT
 );
-SELECT*FROM verbo;
 
 CREATE TABLE competencia(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     descricao VARCHAR(45) 
 );
-SELECT*FROM competencia;
+select*from competencia;
+DELETE FROM competencia WHERE id = 11;
 
+
+SELECT*FROM competencia, verbo;
+SELECT*FROM verbo;
 ALTER TABLE competencia ADD COLUMN fk_verbo_id INT;
 
 
@@ -30,7 +44,6 @@ CREATE TABLE historia (
     descricao LONGTEXT,
     final VARCHAR(200)
 );
-SELECT*FROM historia;
 
 CREATE TABLE missao (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -50,16 +63,16 @@ CREATE TABLE etapa (
     fk_verbo_id INT
 );
 
-DROP TABLE etapa;
 
-SELECT*FROM etapa;
+
 
 CREATE TABLE missaoHistoria (
     id INT PRIMARY KEY auto_increment,
     fk_Missao_id INT,
     fk_historia_id INT
 );
-INSERT INTO missaoHistoria()
+
+
 SELECT*FROM missaoHistoria;
 
 ALTER TABLE competencia ADD CONSTRAINT FK_competencia_2
@@ -98,8 +111,7 @@ ALTER TABLE missaoHistoria ADD CONSTRAINT FK_missaoHistoria_3
     REFERENCES historia (id)
     ON DELETE CASCADE;
     
--- INSERÇÕES DAS TABELAS -- 
-
+-- INSERÇÕES DA TABELA BLOOM -- 
 INSERT INTO bloom (nome) VALUES
 ("Memorizar"),
 ("Compreender"),
@@ -107,8 +119,14 @@ INSERT INTO bloom (nome) VALUES
 ("Analisar"),
 ("Avaliar"),
 ("Criar");
+
+-- VISUALIZAR A TABELA BLOOM -- 
 SELECT*FROM bloom;
+
+-- VISUALIZAR A TABELA VERBO--
 SELECT*FROM verbo;
+
+-- INSERÇÃO DE DADOS DATABELA VERBO -- 
 INSERT INTO verbo(nomeVerbo,fk_bloom_id) VALUES
 ("Listar",1),
 ("Relembrar",1),
@@ -136,8 +154,7 @@ INSERT INTO verbo(nomeVerbo,fk_bloom_id) VALUES
 ("Demonstrar",3),
 ("Classificar",3);
 
-
-
+-- CONTINUAÇÃO DA TABELA VERBO -- 
 INSERT INTO verbo(nomeVerbo,fk_bloom_id) VALUES
 ("Resolver",4),
 ("Categorizar",4),
@@ -166,7 +183,6 @@ INSERT INTO verbo(nomeVerbo,fk_bloom_id) VALUES
 ("Inventar",6);
 
 -- INSERÇÃO DA TABELA COMPETÊNCIA -- 
-
 INSERT INTO competencia(descricao) VALUES
 ("Listar"),
 ("Reconhecer"),
@@ -179,7 +195,12 @@ INSERT INTO competencia(descricao) VALUES
 ("Delimitar"),
 ("Elaborar");
 
--- UPDATE DAS COMPETENCIAS -- 
+INSERT INTO competencia(fk_verbo_id) values(5); 
+
+-- VISUALIZAR A TABELA COMPETENCIA--
+SELECT*FROM competencia;
+
+-- UPDATE DAS COMPETENCIAS NO CAMPO DESCRIÇÃO POIS NA PRIMEIRA INSERÇÃO FORAM INSERIDAS AS INFORMAÇÕES DE MANEIRA ERRADA -- 
 UPDATE competencia
 SET descricao = 'O furão deve LOCALIZAR as principais tags HTML para matar o inimigo'
 WHERE id = 1; 
@@ -220,8 +241,10 @@ UPDATE competencia
 SET descricao = 'O furão deve ELABORAR databases para se curar'
 WHERE id = 10; 
 
+SELECT*FROM verbo;
 
-SELECT*FROM COMPETENCIA;
+-- VISUALIZAR A TABELA COMPETENCIA APÓS O UPDATE--
+select*from competencia;
 
 -- INSERÇÃO DA TABELA HISTORIA -- 
 INSERT INTO historia(titulo,descricao,final) VALUES("Planeta Alien","No ano de 3250 a terra foi destruída por alienígenas do Planeta Alien. Esses extraterrestes
@@ -240,6 +263,17 @@ aumentando a possibilidade de destruir mais aliens e assim salvar também os seu
 terrestres.","Ao final de todas as missões, todos os “Aliens” serão destruídos e o Furão irá resgatar seus
 amigos e construir um novo planeta com justiça e paz.");
 
+-- VISUALIZAR A TABELA HISTORIA --
+SELECT*FROM historia;
+
+-- DELETAR A TABELA HISTORIA -- 
+DELETE FROM historia;
+
+
+-- COMANDO PARA DELETAR AS INFORMAÇÕES DA TABELA HISTÓRIA -- 
+DELETE FROM historia;
+
+-- VISUALIZAR A TABELA HISTORIA -- 
 SELECT*FROM historia;
 
 -- INSERÇÃO DA TABELA MISSÃO --
@@ -254,7 +288,15 @@ INSERT INTO missao(hassh,titulo,forca) VALUES ("aswd345","Functions",8);
 INSERT INTO missao(hassh,titulo,forca) VALUES ("bngx765","Objects",9);
 INSERT INTO missao(hassh,titulo,forca) VALUES ("dffh456","DataBases",10);
 
+-- VISUALIZAR A TABELA MISSAO --
 SELECT*FROM missao;
+
+SELECT missao.id, missao.hassh, missao.titulo, missao.forca, 
+       competencia.nome AS nome_competencia, etapa.nome AS nome_etapa
+FROM missao
+INNER JOIN competencia ON missao.fk_competencia_id = competencia.id
+INNER JOIN etapa ON missao.fk_etapa_id = etapa.id;
+
 
 -- INSERÇÃO DA TABELA ETAPA -- 
 INSERT INTO etapa(instrucao, ponto, tipo) VALUES("Encontrar Tags",1,"C");
@@ -268,4 +310,5 @@ INSERT INTO etapa(instrucao, ponto, tipo) VALUES("Encontrar Functions",8,"H");
 INSERT INTO etapa(instrucao, ponto, tipo) VALUES("Encontrar Objects",9,"H");
 INSERT INTO etapa(instrucao, ponto, tipo) VALUES("Encontrar Databases",10,"A");
 
+-- VISUALIZAR A TABELA ETAPA --
 SELECT*FROM etapa;
